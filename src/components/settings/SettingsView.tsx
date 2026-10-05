@@ -9,17 +9,18 @@ import {
   Bell,
   Palette,
   Eye,
-  Check,
   Moon,
   Sun,
   Laptop,
 } from 'lucide-react';
 
+type SectionType = 'account' | 'privacy' | 'notifications' | 'appearance' | 'accessibility';
+
 export function SettingsView() {
   const { theme, setTheme, settings, updateSettings, showToast } = useUIStore();
   const { user, updateProfile } = useAuthStore();
 
-  const [activeSection, setActiveSection] = useState<'account' | 'privacy' | 'notifications' | 'appearance' | 'accessibility'>('account');
+  const [activeSection, setActiveSection] = useState<SectionType>('account');
 
   // Account form state
   const [name, setName] = useState(user.name);
@@ -34,7 +35,7 @@ export function SettingsView() {
     showToast('Account details updated!', 'success');
   };
 
-  const navItems = [
+  const navItems: Array<{ id: SectionType; label: string; icon: React.ElementType }> = [
     { id: 'account', label: 'Account', icon: User },
     { id: 'privacy', label: 'Privacy', icon: Shield },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -59,7 +60,7 @@ export function SettingsView() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveSection(item.id as any)}
+                  onClick={() => setActiveSection(item.id)}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors text-left ${
                     isActive
                       ? 'bg-[var(--fb-blue-light)] text-[var(--fb-blue)]'
@@ -184,7 +185,7 @@ export function SettingsView() {
                   <select
                     value={settings.privacyPosts}
                     onChange={(e) =>
-                      updateSettings({ privacyPosts: e.target.value as any })
+                      updateSettings({ privacyPosts: e.target.value as 'public' | 'friends' | 'only_me' })
                     }
                     className="p-1.5 rounded-lg bg-[var(--bg-surface)] text-xs border border-[var(--border-subtle)] font-medium"
                   >
@@ -204,7 +205,7 @@ export function SettingsView() {
                   <select
                     value={settings.privacyRequests}
                     onChange={(e) =>
-                      updateSettings({ privacyRequests: e.target.value as any })
+                      updateSettings({ privacyRequests: e.target.value as 'everyone' | 'friends_of_friends' })
                     }
                     className="p-1.5 rounded-lg bg-[var(--bg-surface)] text-xs border border-[var(--border-subtle)] font-medium"
                   >
@@ -223,7 +224,7 @@ export function SettingsView() {
                   <select
                     value={settings.privacyMessages}
                     onChange={(e) =>
-                      updateSettings({ privacyMessages: e.target.value as any })
+                      updateSettings({ privacyMessages: e.target.value as 'everyone' | 'friends' })
                     }
                     className="p-1.5 rounded-lg bg-[var(--bg-surface)] text-xs border border-[var(--border-subtle)] font-medium"
                   >
@@ -315,11 +316,11 @@ export function SettingsView() {
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                {[
+                {([
                   { id: 'light', label: 'Light', icon: Sun },
                   { id: 'dark', label: 'Dark', icon: Moon },
                   { id: 'system', label: 'System', icon: Laptop },
-                ].map((item) => {
+                ] as const).map((item) => {
                   const Icon = item.icon;
                   const isSelected = theme === item.id;
 
@@ -327,7 +328,7 @@ export function SettingsView() {
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => setTheme(item.id as any)}
+                      onClick={() => setTheme(item.id)}
                       className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
                         isSelected
                           ? 'border-[var(--fb-blue)] bg-[var(--fb-blue-light)] text-[var(--fb-blue)]'
@@ -366,7 +367,7 @@ export function SettingsView() {
                   <select
                     value={settings.fontSize}
                     onChange={(e) =>
-                      updateSettings({ fontSize: e.target.value as any })
+                      updateSettings({ fontSize: e.target.value as 'small' | 'medium' | 'large' })
                     }
                     className="p-1.5 rounded-lg bg-[var(--bg-surface)] text-xs border border-[var(--border-subtle)] font-medium"
                   >

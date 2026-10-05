@@ -5,11 +5,10 @@ import { useFeedStore } from '@/stores/feed-store';
 import { useMarketplaceStore } from '@/stores/marketplace-store';
 import { useUIStore } from '@/stores/ui-store';
 import { PostCard } from '@/components/posts/PostCard';
-import { Bookmark, BookmarkCheck, ExternalLink, Trash2 } from 'lucide-react';
-import Link from 'next/link';
+import { Bookmark, Trash2 } from 'lucide-react';
 
 export function SavedView() {
-  const { posts, toggleSavePost } = useFeedStore();
+  const { posts } = useFeedStore();
   const { items, toggleSaveItem } = useMarketplaceStore();
   const { showToast } = useUIStore();
 
@@ -19,6 +18,12 @@ export function SavedView() {
   const savedProducts = items.filter((i) => i.isSaved);
 
   const totalSaved = savedPosts.length + savedProducts.length;
+
+  const tabs: Array<{ id: 'all' | 'posts' | 'marketplace'; label: string }> = [
+    { id: 'all', label: `All (${totalSaved})` },
+    { id: 'posts', label: `Posts (${savedPosts.length})` },
+    { id: 'marketplace', label: `Marketplace (${savedProducts.length})` },
+  ];
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-6 space-y-6 select-none">
@@ -34,14 +39,10 @@ export function SavedView() {
         </div>
 
         <div className="flex bg-[var(--bg-input)] rounded-lg p-1 text-xs font-semibold">
-          {[
-            { id: 'all', label: `All (${totalSaved})` },
-            { id: 'posts', label: `Posts (${savedPosts.length})` },
-            { id: 'marketplace', label: `Marketplace (${savedProducts.length})` },
-          ].map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`px-3 py-1.5 rounded-md transition-colors ${
                 activeTab === tab.id
                   ? 'bg-[var(--bg-surface)] text-[var(--fb-blue)] shadow-xs'

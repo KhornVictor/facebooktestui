@@ -6,8 +6,9 @@ import { useMessengerStore } from '@/stores/messenger-store';
 import { useUIStore } from '@/stores/ui-store';
 import { Avatar } from '@/components/ui/Avatar';
 import { useRouter } from 'next/navigation';
-import { UserCheck, UserPlus, UserX, MessageCircle, Gift } from 'lucide-react';
+import { UserPlus, UserX, MessageCircle, Gift } from 'lucide-react';
 import Link from 'next/link';
+import { User } from '@/types';
 
 export function FriendsView() {
   const router = useRouter();
@@ -25,11 +26,18 @@ export function FriendsView() {
 
   const [activeTab, setActiveTab] = useState<'requests' | 'suggestions' | 'all' | 'birthdays'>('requests');
 
-  const handleMessage = (u: any) => {
+  const handleMessage = (u: User) => {
     const convId = getOrCreateConversationWithUser(u);
     setActiveConversation(convId);
     router.push('/messenger');
   };
+
+  const tabs: Array<{ id: 'requests' | 'suggestions' | 'all' | 'birthdays'; label: string }> = [
+    { id: 'requests', label: `Requests (${friendRequests.length})` },
+    { id: 'suggestions', label: 'People You May Know' },
+    { id: 'all', label: `All Friends (${friends.length})` },
+    { id: 'birthdays', label: 'Birthdays' },
+  ];
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6 space-y-6 select-none">
@@ -43,15 +51,10 @@ export function FriendsView() {
         </div>
 
         <div className="flex gap-1.5 overflow-x-auto text-xs font-semibold">
-          {[
-            { id: 'requests', label: `Requests (${friendRequests.length})` },
-            { id: 'suggestions', label: 'People You May Know' },
-            { id: 'all', label: `All Friends (${friends.length})` },
-            { id: 'birthdays', label: 'Birthdays' },
-          ].map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`px-3.5 py-2 rounded-lg transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-[var(--fb-blue)] text-white'

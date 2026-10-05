@@ -171,7 +171,7 @@ export const useMessengerStore = create<MessengerState>((set, get) => {
             (r) => r.userId === userId
           );
 
-          let newReactions = [...existingReactions];
+          const newReactions = [...existingReactions];
 
           if (userReactionIndex > -1) {
             if (newReactions[userReactionIndex].emoji === emoji) {
